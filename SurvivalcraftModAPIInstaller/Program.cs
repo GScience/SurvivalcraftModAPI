@@ -13,7 +13,7 @@ namespace SurvivalcraftModAPIInstaller
         private static string scVersion = "2.0.30.0";
         private static string modAPIVersion = "1.0.0.0";
 
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             string path;
             string modAPIPath;
@@ -41,7 +41,7 @@ namespace SurvivalcraftModAPIInstaller
             {
                 System.Console.Out.Write("不支持的版本！仅支持" + scVersion + "\n");
 
-                return;
+                return -1;
             }
             //开始注入类（把自己的ModAPI类注入到SC里）
 
@@ -156,6 +156,8 @@ namespace SurvivalcraftModAPIInstaller
                 }
             }
             scAssembiy.Write(path.Substring(0, path.Length - 4) + "-ModAPI-" + modAPIVersion + ".exe");
+
+            return 0;
         }
     }
 }
