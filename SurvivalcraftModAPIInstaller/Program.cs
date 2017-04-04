@@ -106,7 +106,7 @@ namespace SurvivalcraftModAPIInstaller
                                                     foreach (FieldDefinition field in modType.Fields)
                                                         if (field.Name == "GameInitAction")
                                                         {
-                                                            FieldReference gameInitActionField = scAssembiy.MainModule.ImportReference(field.Resolve());
+                                                            FieldReference gameInitActionField = scAssembiy.MainModule.Import(field.Resolve());
                                                             code.Insert(6, Instruction.Create(OpCodes.Ldsfld, gameInitActionField));
                                                             break;
                                                         }
@@ -144,7 +144,7 @@ namespace SurvivalcraftModAPIInstaller
                                     foreach (FieldDefinition field in modType.Fields)
                                         if (field.Name == "modBlocks")
                                         {
-                                            FieldReference modBlockField = scAssembiy.MainModule.ImportReference(field.Resolve());
+                                            FieldReference modBlockField = scAssembiy.MainModule.Import(field.Resolve());
                                             scMethod.Body.GetILProcessor().Replace(scMethod.Body.Instructions[5], Instruction.Create(OpCodes.Ldsfld, modBlockField));
                                             break;
                                         }
