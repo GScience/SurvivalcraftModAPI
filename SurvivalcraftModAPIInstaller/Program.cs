@@ -78,9 +78,49 @@ namespace SurvivalcraftModAPIInstaller
                 }
 
                 //游戏初始化注入
-                if (scClass.Name == "BlocksManager")
+                if (scClass.Name == "FrontendManager")
                 {
+                    foreach (MethodDefinition scMethod in scClass.Methods)
+                    {
+                        if (scMethod.Name == "Initialize")
+                        {
+                            Mono.Collections.Generic.Collection<Instruction> code = scMethod.Body.Instructions;
 
+                            //找loading screen
+                            foreach (TypeDefinition loadingScreenClass in scAssembiy.MainModule.Types)
+                            {
+                                if (loadingScreenClass.Name == "LoadingScreen")
+                                {
+                                    //找AddLoadAction
+                                    foreach (MethodDefinition addLoadActionMethod in loadingScreenClass.Methods)
+                                    {
+                                        if (addLoadActionMethod.Name == "AddLoadAction")
+                                        {
+                                            code.Insert(6, Instruction.Create(OpCodes.Ldloc_0));
+                                            code.Insert(6, Instruction.Create(OpCodes.Callvirt, addLoadActionMethod));
+                                            //寻找ModAPI中的变量
+                                            foreach (TypeDefinition modType in modAPIAssembiy.MainModule.Types)
+                                            {
+                                                if (modType.Name == "ModAction")
+                                                {
+                                                    foreach (FieldDefinition field in modType.Fields)
+                                                        if (field.Name == "GameInitAction")
+                                                        {
+                                                            FieldReference gameInitActionField = scAssembiy.MainModule.ImportReference(field.Resolve());
+                                                            code.Insert(6, Instruction.Create(OpCodes.Ldsfld, gameInitActionField));
+                                                            break;
+                                                        }
+                                                    break;
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
                 //BlockManager的注入
                 if (scClass.Name == "BlocksManager")
@@ -108,6 +148,7 @@ namespace SurvivalcraftModAPIInstaller
                                             scMethod.Body.GetILProcessor().Replace(scMethod.Body.Instructions[5], Instruction.Create(OpCodes.Ldsfld, modBlockField));
                                             break;
                                         }
+                                    break;
                                 }
                             }
                         }
