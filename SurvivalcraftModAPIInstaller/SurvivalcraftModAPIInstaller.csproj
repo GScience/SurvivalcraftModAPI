@@ -28,7 +28,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -71,8 +71,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>$(TargetPath) $(SolutionDir)Survivalcraft.exe $(SolutionDir)SurvivalcraftRefernces\ModAPI.dll
+copy $(SolutionDir)Survivalcraft-ModAPI-1.0.0.0.exe $(SolutionDir)SurvivalcraftRefernces\Survivalcraft.exe
+del $(SolutionDir)Survivalcraft-ModAPI-1.0.0.0.exe</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

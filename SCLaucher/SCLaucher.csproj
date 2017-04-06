@@ -126,10 +126,8 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)SurvivalcraftModAPIInstaller\bin\SurvivalcraftModAPIInstaller.exe $(SolutionDir)Survivalcraft.exe $(SolutionDir)ModAPI\$(OutDir)ModAPI.dll
-copy $(SolutionDir)Survivalcraft-ModAPI-1.0.0.0.exe $(SolutionDir)SurvivalcraftRefernces\Survivalcraft.exe
-del $(SolutionDir)Survivalcraft-ModAPI-1.0.0.0.exe $(SolutionDir)SurvivalcraftRefernces\Survivalcraft.exe
-copy $(SolutionDir)ModAPI\$(OutDir)ModAPI.dll $(SolutionDir)SurvivalcraftRefernces\ModAPI.dll</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

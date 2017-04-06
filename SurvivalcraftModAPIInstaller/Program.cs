@@ -122,6 +122,20 @@ namespace SurvivalcraftModAPIInstaller
                         }
                     }
                 }
+                //SubsystemTerrain中的监听器
+                if (scClass.Name == "SubsystemTerrain")
+                {
+                    foreach (MethodDefinition scMethod in scClass.Methods)
+                    {
+                        if (scMethod.Name == "DestroyCell")
+                        {
+                            //取消
+                            scMethod.Body.GetILProcessor().Body.Instructions.Clear();
+                            scMethod.Body.GetILProcessor().Append(Instruction.Create(OpCodes.Ret));
+                        }
+                    }
+                }
+
                 //BlockManager的注入
                 if (scClass.Name == "BlocksManager")
                 {

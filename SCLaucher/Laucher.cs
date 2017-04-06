@@ -26,7 +26,7 @@ namespace SCLaucher
             ModAPI.BlocksManager.modBlocks = new List<System.Reflection.TypeInfo>();
 
             foreach (TypeInfo info in IntrospectionExtensions.GetTypeInfo((Type)typeof(Game.BlocksManager)).Assembly.DefinedTypes)
-            {
+            { 
                 ModAPI.BlocksManager.modBlocks.Add(info);
             }
 
