@@ -150,11 +150,11 @@ namespace SurvivalcraftModAPIInstaller
                                             //寻找参数
                                             ilProcessor.Body.Instructions.Insert(startPos + 0, Instruction.Create(OpCodes.Ldloc_2));
 
-                                            foreach (FieldReference terrainData in scClass.Fields)
+                                            foreach (MethodReference getTerrainData in scClass.Methods)
                                             {
-                                                if (terrainData.Name == "<TerrainData>k__BackingField")
+                                                if (getTerrainData.Name == "get_TerrainData")
                                                 {
-                                                    ilProcessor.Body.Instructions.Insert(startPos + 1, Instruction.Create(OpCodes.Ldsfld, terrainData));
+                                                    ilProcessor.Body.Instructions.Insert(startPos + 1, Instruction.Create(OpCodes.Call, getTerrainData));
                                                     break;
                                                 }
                                             }
