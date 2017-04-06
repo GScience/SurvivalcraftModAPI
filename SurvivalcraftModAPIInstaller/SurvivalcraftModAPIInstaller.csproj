@@ -72,6 +72,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>$(TargetPath) $(SolutionDir)Survivalcraft.exe $(SolutionDir)SurvivalcraftRefernces\ModAPI.dll
+del $(SolutionDir)SurvivalcraftRefernces\Survivalcraft.exe
 copy $(SolutionDir)Survivalcraft-ModAPI-1.0.0.0.exe $(SolutionDir)SurvivalcraftRefernces\Survivalcraft.exe
 del $(SolutionDir)Survivalcraft-ModAPI-1.0.0.0.exe</PostBuildEvent>
   </PropertyGroup>

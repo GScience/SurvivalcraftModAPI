@@ -98,6 +98,7 @@ namespace SurvivalcraftModAPIInstaller
                                         {
                                             code.Insert(6, Instruction.Create(OpCodes.Ldloc_0));
                                             code.Insert(6, Instruction.Create(OpCodes.Callvirt, addLoadActionMethod));
+
                                             //寻找ModAPI中的变量
                                             foreach (TypeDefinition modType in modAPIAssembiy.MainModule.Types)
                                             {
@@ -129,9 +130,35 @@ namespace SurvivalcraftModAPIInstaller
                     {
                         if (scMethod.Name == "DestroyCell")
                         {
-                            //取消
-                            scMethod.Body.GetILProcessor().Body.Instructions.Clear();
-                            scMethod.Body.GetILProcessor().Append(Instruction.Create(OpCodes.Ret));
+                            //增加event调用
+                            ILProcessor ilProcessor = scMethod.Body.GetILProcessor().Body.GetILProcessor();
+
+                            foreach (TypeDefinition modType in modAPIAssembiy.MainModule.Types)
+                            {
+                                if (modType.Name == "BlockEvents")
+                                {
+                                    foreach (MethodDefinition method in modType.Methods)
+                                    {
+                                        if (method.Name == "blockBreakEvent")
+                                        {
+                                            MethodReference playerChangeBlockEventMethod = scAssembiy.MainModule.Import(method.Resolve());
+                                            Instruction methodEnd = ilProcessor.Body.Instructions[ilProcessor.Body.Instructions.Count - 1];
+
+                                            //从16开始
+                                            int startPos = 14;
+
+                                            //寻找参数
+                                            ilProcessor.Body.Instructions.Insert(startPos + 0, Instruction.Create(OpCodes.Ldloc_2));
+                                            ilProcessor.Body.Instructions.Insert(startPos + 1, Instruction.Create(OpCodes.Call, playerChangeBlockEventMethod));
+                                            ilProcessor.Body.Instructions.Insert(startPos + 2, Instruction.Create(OpCodes.Brfalse, methodEnd));
+
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                            break;
                         }
                     }
                 }
