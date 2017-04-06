@@ -9,11 +9,8 @@ namespace ModAPI.Event
     public class BlockEvents
     {
         //若想取消事件则可以返回false
-        public static bool blockBreakEvent(Game.Block oldBlock)
+        public static bool blockBreakEvent(Game.Block oldBlock,Game.TerrainData terraria)
         {
-            if (oldBlock.ToString() == "Game.DirtBlock")
-                return false;
-
             return true;
         }
     }

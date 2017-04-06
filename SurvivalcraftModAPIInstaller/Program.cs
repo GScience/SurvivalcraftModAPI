@@ -144,13 +144,22 @@ namespace SurvivalcraftModAPIInstaller
                                             MethodReference playerChangeBlockEventMethod = scAssembiy.MainModule.Import(method.Resolve());
                                             Instruction methodEnd = ilProcessor.Body.Instructions[ilProcessor.Body.Instructions.Count - 1];
 
-                                            //从16开始
+                                            //从14开始
                                             int startPos = 14;
 
                                             //寻找参数
                                             ilProcessor.Body.Instructions.Insert(startPos + 0, Instruction.Create(OpCodes.Ldloc_2));
-                                            ilProcessor.Body.Instructions.Insert(startPos + 1, Instruction.Create(OpCodes.Call, playerChangeBlockEventMethod));
-                                            ilProcessor.Body.Instructions.Insert(startPos + 2, Instruction.Create(OpCodes.Brfalse, methodEnd));
+
+                                            foreach (FieldReference terrainData in scClass.Fields)
+                                            {
+                                                if (terrainData.Name == "<TerrainData>k__BackingField")
+                                                {
+                                                    ilProcessor.Body.Instructions.Insert(startPos + 1, Instruction.Create(OpCodes.Ldsfld, terrainData));
+                                                    break;
+                                                }
+                                            }
+                                            ilProcessor.Body.Instructions.Insert(startPos + 2, Instruction.Create(OpCodes.Call, playerChangeBlockEventMethod));
+                                            ilProcessor.Body.Instructions.Insert(startPos + 3, Instruction.Create(OpCodes.Brfalse, methodEnd));
 
                                             break;
                                         }
