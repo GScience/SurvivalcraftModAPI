@@ -114,6 +114,9 @@
     <EmbeddedResource Include="Properties\ModAPI.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="EntitySystem">
+      <HintPath>..\SurvivalcraftRefernces\EntitySystem.dll</HintPath>
+    </Reference>
     <Reference Include="Survivalcraft">
       <HintPath>..\Survivalcraft.exe</HintPath>
     </Reference>

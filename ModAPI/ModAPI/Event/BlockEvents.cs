@@ -6,12 +6,22 @@ using System.Threading.Tasks;
 
 namespace ModAPI.Event
 {
-    public class BlockEvents
+    public class BlockEvents : Game.SubsystemBlockBehavior
     {
-        //若想取消事件则可以返回false
-        public static bool blockBreakEvent(Game.Block oldBlock,Game.TerrainData terraria)
+        //自动调用，请勿使用
+        public static void Initialize(Dictionary<int, List<Game.SubsystemBlockBehavior>> behaviors)
         {
-            return true;
+            for (int i=0;i< behaviors.Count; i++)
+            {
+                behaviors[i].Add(new BlockEvents());
+            }
+        }
+        public override int[] HandledBlocks
+        {
+            get
+            {
+                return new int[0];
+            }
         }
     }
 }

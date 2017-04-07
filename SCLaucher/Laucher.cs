@@ -22,14 +22,6 @@ namespace SCLaucher
         }
         public static void preInit()
         {
-            //初始化Block
-            ModAPI.BlocksManager.modBlocks = new List<System.Reflection.TypeInfo>();
-
-            foreach (TypeInfo info in IntrospectionExtensions.GetTypeInfo((Type)typeof(Game.BlocksManager)).Assembly.DefinedTypes)
-            { 
-                ModAPI.BlocksManager.modBlocks.Add(info);
-            }
-
             //添加初始化事件
             ModAPI.ModAction.GameInitAction = new Action(init);
         }

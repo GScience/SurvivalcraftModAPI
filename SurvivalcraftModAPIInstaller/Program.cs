@@ -35,6 +35,7 @@ namespace SurvivalcraftModAPIInstaller
 
             AssemblyDefinition scAssembiy = AssemblyDefinition.ReadAssembly(path);
             AssemblyDefinition modAPIAssembiy = AssemblyDefinition.ReadAssembly(modAPIPath);
+            AssemblyDefinition systemAssembiy = AssemblyDefinition.ReadAssembly(System.Reflection.Assembly.Load(scAssembiy.MainModule.TypeSystem.Corlib.Name).GetFiles()[0]);
 
             //判断版本
             if (scAssembiy.Name.Version != new Version(scVersion))
@@ -124,49 +125,37 @@ namespace SurvivalcraftModAPIInstaller
                     }
                 }
                 //SubsystemTerrain中的监听器
-                if (scClass.Name == "SubsystemTerrain")
+                if (scClass.Name == "SubsystemBlockBehaviors")
                 {
                     foreach (MethodDefinition scMethod in scClass.Methods)
                     {
-                        if (scMethod.Name == "DestroyCell")
+                        if (scMethod.Name == "Load")
                         {
-                            //增加event调用
+                            //向其中增加BlockEvent
                             ILProcessor ilProcessor = scMethod.Body.GetILProcessor().Body.GetILProcessor();
 
+                            //从114开始
+                            int start = 114;
+
+                            //读入列表
                             foreach (TypeDefinition modType in modAPIAssembiy.MainModule.Types)
                             {
                                 if (modType.Name == "BlockEvents")
                                 {
-                                    foreach (MethodDefinition method in modType.Methods)
+                                    foreach (MethodDefinition blockEventInitMethod in modType.Methods)
                                     {
-                                        if (method.Name == "blockBreakEvent")
+                                        if (blockEventInitMethod.Name == "Initialize")
                                         {
-                                            MethodReference playerChangeBlockEventMethod = scAssembiy.MainModule.Import(method.Resolve());
-                                            Instruction methodEnd = ilProcessor.Body.Instructions[ilProcessor.Body.Instructions.Count - 1];
-
-                                            //从14开始
-                                            int startPos = 14;
-
-                                            //寻找参数
-                                            ilProcessor.Body.Instructions.Insert(startPos + 0, Instruction.Create(OpCodes.Ldloc_2));
-
-                                            foreach (MethodReference getTerrainData in scClass.Methods)
-                                            {
-                                                if (getTerrainData.Name == "get_TerrainData")
-                                                {
-                                                    ilProcessor.Body.Instructions.Insert(startPos + 1, Instruction.Create(OpCodes.Call, getTerrainData));
-                                                    break;
-                                                }
-                                            }
-                                            ilProcessor.Body.Instructions.Insert(startPos + 2, Instruction.Create(OpCodes.Call, playerChangeBlockEventMethod));
-                                            ilProcessor.Body.Instructions.Insert(startPos + 3, Instruction.Create(OpCodes.Brfalse, methodEnd));
-
+                                            ilProcessor.Body.Instructions.Insert(start + 0, Instruction.Create(OpCodes.Ldloc_0));
+                                            MethodReference blockEventInit = scAssembiy.MainModule.Import(blockEventInitMethod.Resolve());
+                                            ilProcessor.Body.Instructions.Insert(start + 1, Instruction.Create(OpCodes.Call, blockEventInit));
                                             break;
                                         }
                                     }
                                     break;
                                 }
                             }
+
                             break;
                         }
                     }
@@ -179,12 +168,14 @@ namespace SurvivalcraftModAPIInstaller
                     {
                         if (scMethod.Name == "Initialize")
                         {
+                            ILProcessor ilProcessor = scMethod.Body.GetILProcessor().Body.GetILProcessor();
+
                             //修改循环范围
                             //移除代码
-                            scMethod.Body.GetILProcessor().Remove(scMethod.Body.Instructions[5]);
-                            scMethod.Body.GetILProcessor().Remove(scMethod.Body.Instructions[5]);
-                            scMethod.Body.GetILProcessor().Remove(scMethod.Body.Instructions[5]);
-                            scMethod.Body.GetILProcessor().Remove(scMethod.Body.Instructions[5]);
+                            ilProcessor.Remove(scMethod.Body.Instructions[5]);
+                            ilProcessor.Remove(scMethod.Body.Instructions[5]);
+                            ilProcessor.Remove(scMethod.Body.Instructions[5]);
+                            ilProcessor.Remove(scMethod.Body.Instructions[5]);
 
                             //寻找ModAPI中的变量
                             foreach (TypeDefinition modType in modAPIAssembiy.MainModule.Types)
@@ -195,10 +186,25 @@ namespace SurvivalcraftModAPIInstaller
                                         if (field.Name == "modBlocks")
                                         {
                                             FieldReference modBlockField = scAssembiy.MainModule.Import(field.Resolve());
-                                            scMethod.Body.GetILProcessor().Replace(scMethod.Body.Instructions[5], Instruction.Create(OpCodes.Ldsfld, modBlockField));
+                                            ilProcessor.Replace(scMethod.Body.Instructions[5], Instruction.Create(OpCodes.Ldsfld, modBlockField));
                                             break;
                                         }
                                     break;
+                                }
+                            }
+                            //初始化ModAPI
+                            foreach (TypeDefinition modType in modAPIAssembiy.MainModule.Types)
+                            {
+                                if (modType.Name == "BlocksManager")
+                                {
+                                    foreach (MethodDefinition modBlocksManagerInitMethod in modType.Methods)
+                                    {
+                                        if (modBlocksManagerInitMethod.Name == "Initialize")
+                                        {
+                                            MethodReference modBlocksManagerInit = scAssembiy.MainModule.Import(modBlocksManagerInitMethod.Resolve());
+                                            ilProcessor.Body.Instructions.Insert(0, Instruction.Create(OpCodes.Call, modBlocksManagerInit));
+                                        }
+                                    }
                                 }
                             }
                         }
