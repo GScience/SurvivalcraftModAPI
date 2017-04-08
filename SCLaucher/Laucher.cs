@@ -18,10 +18,8 @@ namespace SCLaucher
         {
             Engine.Vector3 playerLocation = ModAPI.Player.getLocation();
 
-            if (value == 10)
-                return;
-
-            ModAPI.Terrain.getTerrain().ChangeCell((int)playerLocation.X, (int)playerLocation.Y - 1, (int)playerLocation.Z, 10);
+            ModAPI.Block playerBlock = ModAPI.Terrain.getBlock(playerLocation);
+            playerBlock.setBlockID(2);
         }
 
         public override int[] HandledBlocks
