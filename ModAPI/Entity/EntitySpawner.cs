@@ -9,16 +9,22 @@ namespace ModAPI.Entity
 {
     public class EntitySpawner
     {
-        private static Game.SubsystemCreatureSpawn m_subsystemCreatureSpawn;
+        private static Game.SubsystemEntityFactory m_subsystemEntityFactory;
 
         //自动调用，请勿使用
-        public static void Initialize(Game.SubsystemCreatureSpawn subsystemCreatureSpawn)
+        public static void Initialize(Game.SubsystemEntityFactory subsystemEntityFactory)
         {
-            m_subsystemCreatureSpawn = subsystemCreatureSpawn;
+            m_subsystemEntityFactory = subsystemEntityFactory;
         }
-        public static void spawnCreature(string name, Engine.Vector3 location)
+        public static GameEntitySystem.Entity spawnEntity(string name, Engine.Vector3 location)
         {
-            m_subsystemCreatureSpawn.GetType().GetMethod("SpawnCreature",BindingFlags.NonPublic | BindingFlags.Instance).Invoke(m_subsystemCreatureSpawn, new object[] { name, location });
+            GameEntitySystem.Entity newEntity = m_subsystemEntityFactory.CreateEntity(name, true);
+
+            newEntity.FindComponent<Game.ComponentBody>(true).Position = location;
+
+            m_subsystemEntityFactory.Project.AddEntity(newEntity);
+
+            return newEntity;
         }
     }
 }

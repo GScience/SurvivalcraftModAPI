@@ -187,8 +187,8 @@ namespace SurvivalcraftModAPIInstaller
                         }
                     }
                 }
-                //获取地形
-                if (scClass.Name == "SubsystemCreatureSpawn")
+                //获取实体管理器
+                if (scClass.Name == "SubsystemEntityFactory")
                 {
                     foreach (MethodDefinition scMethod in scClass.Methods)
                     {

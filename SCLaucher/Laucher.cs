@@ -10,18 +10,15 @@ namespace SCLaucher
 {
     class testBehavior :Game.SubsystemBlockBehavior
     {
+        Random rand = new Random();
+
         protected override void Load(ValuesDictionary valuesDictionary)
         {
             base.Load(valuesDictionary);
         }
-        public override void OnBlockAdded(int value, int oldValue, int x, int y, int z)
+        public override void OnBlockRemoved(int value, int newValue, int x, int y, int z)
         {
-            Engine.Vector3 playerLocation = ModAPI.Player.getLocation();
-
-            ModAPI.Block playerBlock = ModAPI.Terrain.getBlock(playerLocation);
-            playerBlock.setBlockID(2);
-
-            ModAPI.Entity.EntitySpawner.spawnCreature("Piranha", new Engine.Vector3(x, y, z));
+            ModAPI.Entity.EntitySpawner.spawnEntity("Duck", new Engine.Vector3(x, y, z));
         }
 
         public override int[] HandledBlocks
