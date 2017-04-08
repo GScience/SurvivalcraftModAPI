@@ -124,7 +124,70 @@ namespace SurvivalcraftModAPIInstaller
                         }
                     }
                 }
-                //SubsystemTerrain中的监听器
+
+                //获取玩家
+                if (scClass.Name == "ComponentPlayer")
+                {
+                    foreach (MethodDefinition scMethod in scClass.Methods)
+                    {
+                        if (scMethod.Name == "Load")
+                        {
+                            ILProcessor ilProcessor = scMethod.Body.GetILProcessor().Body.GetILProcessor();
+                            ilProcessor.Body.Instructions.Insert(ilProcessor.Body.Instructions.Count - 1, Instruction.Create(OpCodes.Ldarg_0));
+
+                            foreach (TypeDefinition modType in modAPIAssembiy.MainModule.Types)
+                            {
+                                if (modType.Name == "Player")
+                                {
+                                    foreach (MethodDefinition playerInitMethod in modType.Methods)
+                                    {
+                                        if (playerInitMethod.Name == "Initialize")
+                                        {
+                                            MethodReference playerInit = scAssembiy.MainModule.Import(playerInitMethod.Resolve());
+                                            ilProcessor.Body.Instructions.Insert(ilProcessor.Body.Instructions.Count - 1, Instruction.Create(OpCodes.Call, playerInit));
+                                            
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                //获取地形
+                if (scClass.Name == "SubsystemTerrain")
+                {
+                    foreach (MethodDefinition scMethod in scClass.Methods)
+                    {
+                        if (scMethod.Name == ".ctor")
+                        {
+                            ILProcessor ilProcessor = scMethod.Body.GetILProcessor().Body.GetILProcessor();
+                            ilProcessor.Body.Instructions.Insert(ilProcessor.Body.Instructions.Count - 1, Instruction.Create(OpCodes.Ldarg_0));
+
+                            foreach (TypeDefinition modType in modAPIAssembiy.MainModule.Types)
+                            {
+                                if (modType.Name == "Terrain")
+                                {
+                                    foreach (MethodDefinition terrainInitMethod in modType.Methods)
+                                    {
+                                        if (terrainInitMethod.Name == "Initialize")
+                                        {
+                                            MethodReference terrainInit = scAssembiy.MainModule.Import(terrainInitMethod.Resolve());
+                                            ilProcessor.Body.Instructions.Insert(ilProcessor.Body.Instructions.Count - 1, Instruction.Create(OpCodes.Call, terrainInit));
+
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                //地图监听
                 if (scClass.Name == "SubsystemBlockBehaviors")
                 {
                     foreach (MethodDefinition scMethod in scClass.Methods)

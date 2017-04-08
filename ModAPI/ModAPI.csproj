@@ -107,13 +107,19 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ModAPI\BlocksManager.cs" />
-    <Compile Include="ModAPI\ModAction.cs" />
-    <Compile Include="ModAPI\Event\BlockEvents.cs" />
+    <Compile Include="BlocksManager.cs" />
+    <Compile Include="ModAction.cs" />
+    <Compile Include="Event\BlockEvents.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Terrain.cs" />
     <EmbeddedResource Include="Properties\ModAPI.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Engine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SurvivalcraftRefernces\Engine.dll</HintPath>
+    </Reference>
     <Reference Include="EntitySystem">
       <HintPath>..\SurvivalcraftRefernces\EntitySystem.dll</HintPath>
     </Reference>

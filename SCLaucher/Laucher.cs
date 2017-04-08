@@ -4,9 +4,34 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using TemplatesDatabase;
 
 namespace SCLaucher
 {
+    class testBehavior :Game.SubsystemBlockBehavior
+    {
+        protected override void Load(ValuesDictionary valuesDictionary)
+        {
+            base.Load(valuesDictionary);
+        }
+        public override void OnBlockAdded(int value, int oldValue, int x, int y, int z)
+        {
+            Engine.Vector3 playerLocation = ModAPI.Player.getLocation();
+
+            if (value == 10)
+                return;
+
+            ModAPI.Terrain.getTerrain().ChangeCell((int)playerLocation.X, (int)playerLocation.Y - 1, (int)playerLocation.Z, 10);
+        }
+
+        public override int[] HandledBlocks
+        {
+            get
+            {
+                return new int[] { 0x02 };
+            }
+        }
+    }
     class Laucher
     {
         public static void dialogCommandAction(Game.MessageDialogButton button)
@@ -19,6 +44,7 @@ namespace SCLaucher
         public static void init()
         {
             Game.DialogsManager.ShowDialog(new Game.MessageDialog("Mod API 1.0.0", "Do you like it?", "Yes", "No", dialogCommandAction));
+            ModAPI.Event.BlockEvents.register(new testBehavior());
         }
         public static void preInit()
         {

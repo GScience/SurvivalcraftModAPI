@@ -113,6 +113,11 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Engine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="EntitySystem, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SurvivalcraftRefernces\EntitySystem.dll</HintPath>
+    </Reference>
     <Reference Include="ModAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SurvivalcraftRefernces\ModAPI.dll</HintPath>
