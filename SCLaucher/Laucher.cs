@@ -20,6 +20,8 @@ namespace SCLaucher
 
             ModAPI.Block playerBlock = ModAPI.Terrain.getBlock(playerLocation);
             playerBlock.setBlockID(2);
+
+            ModAPI.Entity.EntitySpawner.spawnCreature("Piranha", new Engine.Vector3(x, y, z));
         }
 
         public override int[] HandledBlocks

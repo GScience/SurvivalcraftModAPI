@@ -187,6 +187,37 @@ namespace SurvivalcraftModAPIInstaller
                         }
                     }
                 }
+                //获取地形
+                if (scClass.Name == "SubsystemCreatureSpawn")
+                {
+                    foreach (MethodDefinition scMethod in scClass.Methods)
+                    {
+                        if (scMethod.Name == ".ctor")
+                        {
+                            ILProcessor ilProcessor = scMethod.Body.GetILProcessor().Body.GetILProcessor();
+                            ilProcessor.Body.Instructions.Insert(ilProcessor.Body.Instructions.Count - 1, Instruction.Create(OpCodes.Ldarg_0));
+
+                            foreach (TypeDefinition modType in modAPIAssembiy.MainModule.Types)
+                            {
+                                if (modType.Name == "EntitySpawner")
+                                {
+                                    foreach (MethodDefinition terrainInitMethod in modType.Methods)
+                                    {
+                                        if (terrainInitMethod.Name == "Initialize")
+                                        {
+                                            MethodReference terrainInit = scAssembiy.MainModule.Import(terrainInitMethod.Resolve());
+                                            ilProcessor.Body.Instructions.Insert(ilProcessor.Body.Instructions.Count - 1, Instruction.Create(OpCodes.Call, terrainInit));
+
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
                 //地图监听
                 if (scClass.Name == "SubsystemBlockBehaviors")
                 {
